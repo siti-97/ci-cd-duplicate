@@ -1,0 +1,5 @@
+metric,before_cleaning,after_cleaning
+rows,1190,918
+columns,12,12
+missing_values,0,0
+duplicate_rows,272,0

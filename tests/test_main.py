@@ -1,19 +1,36 @@
 import sys
-import os
-# Help the computer find the code in the 'src' folder
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
-from main import load_and_process_data
+from pathlib import Path
+import pandas as pd
 
-def test_data_quality():
-    # 1. Run the cleaning function
-    df = load_and_process_data("data/dataset.csv", "data/test_processed_dataset.csv")
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-    # 2. Check for Duplicates (Post-cleaning check)
-    assert df.duplicated().sum() == 0, "Error: Duplicates were not removed!"
+from main import load_and_process_data, validate_dataset
 
-    # 3. Check for Data Loss (Integrity check)
-    # If the original file had 1000 rows and 50 were duplicates,
-    # we expect exactly 950 rows.
-    assert len(df) > 0, "Error: The cleaned file is empty!"
+def test_duplicate_removal(tmp_path):
+    """Check that duplicate rows are removed correctly."""
+    raw_path = Path("data/dataset.csv")
+    output_path = tmp_path / "processed_dataset.csv"
 
-    print("Post-cleaning validation successful!")
+    raw_df = pd.read_csv(raw_path)
+    cleaned_df = load_and_process_data(raw_path, output_path)
+
+    expected_df = raw_df.drop_duplicates().reset_index(drop=True)
+
+    assert output_path.exists(), "Processed dataset file was not created."
+    assert cleaned_df.duplicated().sum() == 0, "Duplicate rows still exist."
+    assert len(cleaned_df) == len(expected_df), "Cleaned row count is incorrect."
+
+    pd.testing.assert_frame_equal(
+        cleaned_df.reset_index(drop=True),
+        expected_df
+    )
+
+def test_validation_summary():
+    """Check that validation returns basic metrics."""
+    raw_df = pd.read_csv("data/dataset.csv")
+    validation = validate_dataset(raw_df)
+
+    assert validation["row_count"] > 0
+    assert validation["column_count"] == 12
+    assert "duplicate_rows" in validation
+    assert "total_missing_values" in validation

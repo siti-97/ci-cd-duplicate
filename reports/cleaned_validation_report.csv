@@ -1,0 +1,13 @@
+column,data_type,missing_values,missing_percentage,unique_values
+age,int64,0,0.0,50
+sex,int64,0,0.0,2
+chest pain type,int64,0,0.0,4
+resting bp s,int64,0,0.0,67
+cholesterol,int64,0,0.0,222
+fasting blood sugar,int64,0,0.0,2
+resting ecg,int64,0,0.0,3
+max heart rate,int64,0,0.0,119
+exercise angina,int64,0,0.0,2
+oldpeak,float64,0,0.0,53
+ST slope,int64,0,0.0,4
+target,int64,0,0.0,2
