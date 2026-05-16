@@ -1,8 +1,9 @@
+# This file lists the tools the server needs to install
 pandas
 pytest
 
 %%writefile .gitignore
+# This file tells Git which files to ignore (like junk cache files)
 __pycache__/
 *.pyc
 .DS_Store
-.env
